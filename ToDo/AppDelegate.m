@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 
+#import "TasksViewController.h"
+
 #import "AFNetworkActivityIndicatorManager.h"
 
 @implementation AppDelegate
@@ -24,8 +26,9 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     
-    UIViewController *viewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    TasksViewController *tasksViewController = [[TasksViewController alloc] initWithNibName:@"TasksViewController" bundle:nil];
+    tasksViewController.managedObjectContext = self.managedObjectContext;
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:tasksViewController];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.navigationController;
