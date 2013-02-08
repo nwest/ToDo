@@ -66,12 +66,10 @@
     Task *task = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = task.text;
     cell.textLabel.textColor = [task isCompleted] ? [UIColor lightGrayColor] : [UIColor blackColor];
-    
-//    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//    cell.textLabel.text = [managedObject valueForKey:@"text"];
 }
 
 #pragma mark - UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.managedObjectContext performBlock:^{
@@ -84,6 +82,11 @@
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
 
 - (void)controller:(NSFetchedResultsController *)controller
   didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
@@ -98,7 +101,6 @@
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
-        default:
             break;
     }
 }
@@ -115,11 +117,11 @@
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[self.tableView cellForRowAtIndexPath:newIndexPath]
+            [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath]
               forRowAtIndexPath:indexPath];
             break;
         case NSFetchedResultsChangeMove:
@@ -127,8 +129,6 @@
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
             [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        default:
             break;
     }
 }
